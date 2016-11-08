@@ -1,2 +1,3 @@
 # HBO-ICT-HU-PROG-ThuisBios
-Mini-Project thuis bioscoop
+
+print("Mini-Project thuis bioscoop")
