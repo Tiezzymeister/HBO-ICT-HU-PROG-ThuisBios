@@ -1,3 +1,1 @@
-# HBO-ICT-HU-PROG-ThuisBios
-
-print("Mini-project thuis bioscoop")
+Dit is de readme vna ons Mini project
