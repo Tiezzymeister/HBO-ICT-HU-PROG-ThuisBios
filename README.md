@@ -1,1 +1,1 @@
-Dit is de readme vna ons Mini project
+Dit is de readme van ons mini-project.
