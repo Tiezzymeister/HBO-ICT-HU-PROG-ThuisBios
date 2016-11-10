@@ -4,7 +4,7 @@ import datetime
 from tkinter import *
 
 
-class InlogScherm:
+class inlogscherm:
 
     def __init__(self, master):
         frame = Frame(master)
@@ -27,7 +27,7 @@ class InlogScherm:
 
 
 root = Tk()
-programma = InlogScherm(root)
+programma = inlogscherm(root)
 root.mainloop()
 
 # def get_films():
