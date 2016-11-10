@@ -2,12 +2,6 @@ import requests
 import xmltodict
 import datetime
 from tkinter import *
-root = Tk()
-
-label = Label(master=root, text='Test', background='pink')
-label.pack()
-
-root.mainloop()
 
 
 def get_films():
@@ -21,33 +15,31 @@ def get_films():
     response = requests.get(api_url)
     xmldictionary = xmltodict.parse(response.text)
     films = xmldictionary["filmsoptv"]["film"]
-    print(films)
-    for film in films:
-        if film["titel"] and film["regisseur"] is not None:
-            print(film["titel"] + " - " + film["regisseur"])
+    print(films)                                            #
+    for film in films:                                      #
+        if film["titel"] and film["regisseur"] is not None: #DIT ME+OET ERUIT GEHAALD WORDEN
+            print(film["titel"] + " - " + film["regisseur"])#
+            
+            
+def inlogbezoeker():
+    print("bezoekertest")
+    
+    
+def inlogaanbieder():
+    print("aanbiedertest")
+root = Tk()
 
-def menu():
-    print("Welkom, dit zijn uw opties: ")
-    print("1. Ik wil inloggen als filmbezoeker of filmaanbieder.") #dit later misschien splitsen?
-    print("2. Ik wil alle films van een filmaanbieder zien.")
-    print("3. Ik wil het totaal aantal bezoekers en/of het aantal bezoekers per film zien.")
-    gekozenoptie = input("Kies een optie (1-3): ")
-    if gekozenoptie == "1":
-        aanmelden()
-    if gekozenoptie == "2":
-        allefilms()
-    if gekozenoptie == "3":
-        totalen()
-    else:
-        menu()
-def aanmelden():
-    print("Hier komt nog wat.")
+bezoeker = Button(master=root, text="bezoeker", command=inlogbezoeker)
+bezoeker.pack(side=LEFT, pady=10)
+aanbieder = Button(master=root, text="aanbieder", command=inlogaanbieder)
+aanbieder.pack(side=RIGHT, pady=10)
 
-def allefilms():
-    print("Hier moet ook nog wat komen.")
+root.mainloop()
 
-def totalen():
-    print("En ook nog wat hier...")
+
+
+
+
+
 
 get_films()
-menu()
