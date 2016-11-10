@@ -41,9 +41,9 @@ root.mainloop()
 #     response = requests.get(api_url)
 #     xmldictionary = xmltodict.parse(response.text)
 #     films = xmldictionary["filmsoptv"]["film"]
-#     print(films)                                            #
-#     for film in films:                                      #
-#         if film["titel"] and film["regisseur"] is not None: # dit verwijderen
-#             print(film["titel"] + " - " + film["regisseur"])#
+#     print(films)                                             #
+#     for film in films:                                       #
+#         if film["titel"] and film["regisseur"] is not None:  # dit verwijderen
+#             print(film["titel"] + " - " + film["regisseur"]) #
 #
 # get_films()
