@@ -30,7 +30,6 @@ root = Tk()
 programma = InlogScherm(root)
 root.mainloop()
 
-
 # def get_films():
 #     api_url = 'http://api.filmtotaal.nl/filmsoptv.xml?apikey=4520nc22kzoks8g1nbi4lihxyuu6z0ng&dag=0-0-0&sorteer=0'
 #     api_url = list(api_url)
