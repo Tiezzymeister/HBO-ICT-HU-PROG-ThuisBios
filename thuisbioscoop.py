@@ -25,6 +25,7 @@ class InlogScherm:
     def inlogaanbieder(self):
         print("Aanbiedertest.")
 
+
 root = Tk()
 programma = InlogScherm(root)
 root.mainloop()
