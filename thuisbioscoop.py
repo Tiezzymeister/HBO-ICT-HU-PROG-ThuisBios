@@ -10,7 +10,7 @@ from tkinter.messagebox import showinfo
 
 def get_films():
     """
-    Deze code is om de informatie op te halen van films op tv en stopt het in een dictionary
+    Deze code is om de informatie op te halen van films op tv en stopt het in een CSV-file
     """
     api_url = 'http://api.filmtotaal.nl/filmsoptv.xml?apikey=4520nc22kzoks8g1nbi4lihxyuu6z0ng&dag=0-0-0&sorteer=0'
     api_url = list(api_url)
@@ -22,7 +22,11 @@ def get_films():
     response = requests.get(api_url)
     xmldictionary = xmltodict.parse(response.text)
     films = xmldictionary["filmsoptv"]["film"]
-    return films
+    with open("films.csv", "w", newline="") as bestand:
+        writer = csv.writer(bestand, delimiter=';')
+        for film in films:
+            if film["titel"] and film["starttijd"] and film["eindtijd"] and film["zender"] is not None:
+                writer.writerow((film["titel"], film["starttijd"], film["eindtijd"], film["zender"]))
 
 
 def get_code():
@@ -95,7 +99,7 @@ def aangeboden_films():
     """
     templist = []
     templist2 = []
-    aangeboden = []
+    aangebodenlst = []
     with open("aanbieders.csv", "r", newline="") as aanbiedersfile:
         reader = csv.reader(aanbiedersfile, delimiter=";")
         for row in reader:
@@ -104,8 +108,8 @@ def aangeboden_films():
             templist2.append(item)
         for sublist in templist2:
             for val in sublist:
-                aangeboden.append(val)
-    return aangeboden
+                aangebodenlst.append(val)
+    return aangebodenlst
 
 
 def bezoekersties():
@@ -242,9 +246,9 @@ class ThuisBioscoop:
         self.filmNummer = Entry()
         self.filmNummer.pack(padx=10, pady=10)
         self.films = Label(text="1. " + aangeboden[0] + "\n" + "2. " + aangeboden[1] + "\n" + "3. " + aangeboden[2] + "\n" + "4. " + aangeboden[3] + "\n" + "5. " + aangeboden[4] + "\n" + "6. " + aangeboden[5] + "\n" + "7. " + aangeboden[6])
-        self.films.pack(padx=10, pady=10)
+        self.films.pack(padx=10, pady=5)
         self.submitButton = Button(text="Volgende", command=self.filminfo)
-        self.submitButton.pack(padx=20, pady=20)
+        self.submitButton.pack(padx=10, pady=2)
 
     def filminfo(self):
         """
@@ -272,6 +276,7 @@ class ThuisBioscoop:
             return
 
         tijden_epoch = []
+        self.clear()
         with open("films.csv", "r", newline="") as filmsfile:
             reader = csv.reader(filmsfile, delimiter=";")
             for row in reader:
@@ -300,13 +305,14 @@ class ThuisBioscoop:
 
         self.infolabel = Label(text="Film: " + film + "\n" + "Begintijd: " + begintijd + "\n" + "Eindtijd: " + eindtijd + "\n" + "Deze film wordt mede mogelijk gemaakt door: " + aanbieder + "\n" + "Uw unieke code is:" + code + "\n" + "Zonder code geen toegang!!")
         self.infolabel.pack(padx=10, pady=10)
-        self.klaarButton = Button(text="Klaar", command=self.clear())
+        self.klaarButton = Button(text="Klaar", command=self.clear)
         self.klaarButton.pack(padx=10, pady=10)
 
     def inlogaanbieder(self):
         """
         Deze code verzorgt het login scherm voor de aanbieders
         """
+        self.clear()
         self.instruction = Label(text="Naam: ")
         self.instruction.pack(padx=5, pady=5)
         self.loginNaam = Entry()
@@ -318,41 +324,51 @@ class ThuisBioscoop:
         self.submitButton = Button(text="Volgende", command=self.passwordcheck)
         self.submitButton.pack(padx=5, pady=5)
 
-
     def passwordcheck(self):
+        """
+        Dit stuk code checkt of de ingevulde gegevens goed zijn en geeft de gebruiker een id mee
+        """
         passwords = []
-        loginNaam = self.loginNaam.get()
-        loginPassword = self.password.get()
+        loginnaam = self.loginNaam.get()
+        loginpassword = self.password.get()
         with open("logininfo.csv", "r", newline="") as logincsv:
             reader = csv.reader(logincsv, delimiter=";")
             for row in reader:
                 passwords.append(row[1])
-            print(passwords)
-        if loginNaam == "Ties" and loginPassword == passwords[0]:
-                self.keuzemenu()
+        if loginnaam == "Ties" and loginpassword == passwords[0]:
                 self.clear()
+                self.keuzemenu()
                 self.id = 1
-        elif loginNaam == "Christiaan" and loginPassword == passwords[1]:
-                self.keuzemenu()
+        elif loginnaam == "Christiaan" and loginpassword == passwords[1]:
                 self.clear()
+                self.keuzemenu()
                 self.id = 2
-        elif loginNaam == "Burak" and loginPassword == passwords[2]:
-                self.keuzemenu()
+        elif loginnaam == "Burak" and loginpassword == passwords[2]:
                 self.clear()
+                self.keuzemenu()
                 self.id = 3
-        elif loginNaam == "Harout" and loginPassword == passwords[3]:
-                self.keuzemenu()
+        elif loginnaam == "Harout" and loginpassword == passwords[3]:
                 self.clear()
+                self.keuzemenu()
                 self.id = 4
         else:
             showinfo(title="fout", message="Naam of wachtwoord komen niet overeen met de info in ons systeem")
             return
+
     def keuzemenu(self):
+        """
+        Hier wordthet keuze menu gemaakt
+        """
+        self.clear()
         self.moviesButton = Button(text="Mijn films", command=self.myfilms)
         self.moviesButton.pack(padx=10, pady=10)
         self.unofferedButton = Button(text="Nog niet aangeboden films", command=self.unoffered)
         self.unofferedButton.pack(padx=10, pady=10)
+
     def myfilms(self):
+        """
+        Dit stuk code gebruikt het ID om de goed films op het scherm te vertonen
+        """
         offered = []
         aanbiersfilms = []
         with open("aanbieders.csv", "r", newline="") as aanbiederscsv:
@@ -360,7 +376,6 @@ class ThuisBioscoop:
             for row in reader:
                 aanbiersfilms.append(row)
         if self.id == 1:
-            print(aanbiersfilms)
             for item in aanbiersfilms[0]:
                 offered.append(item)
             try:
@@ -374,6 +389,7 @@ class ThuisBioscoop:
                 showinfo(title="Aangeboden films", message="U bied deze film(s) aan " + offered[1] + " & " + offered[2])
             except IndexError:
                 showinfo(title="Aangeboden films", message="U bied deze film(s) aan " + offered[1])
+        elif self.id == 3:
             for item in aanbiersfilms[2]:
                 offered.append(item)
             try:
@@ -389,9 +405,30 @@ class ThuisBioscoop:
                 showinfo(title="Aangeboden films", message="U bied deze film(s) aan " + offered[1])
 
     def unoffered(self):
-        print("Doe hier de films die nog nergens aan geboden worden, nummer 1 op het opdrachten blad")
+        """
+        Dit stuk code vergelijkt alle aangeboden films met alle films en stopt alle films die niet in de all_films voorkomen in de lijst unofferedlst en laat hem vervolgens zien
+        """
+        self.clear()
+        all_films = []
+        with open("films.csv", "r", newline="") as bestand:
+            reader = csv.reader(bestand, delimiter=';')
+            for row in reader:
+                all_films.append(row[0])
+        unofferedlst = []
+        for item in all_films:
+            if item not in aangeboden:
+                unofferedlst.append(item)
+        self.listbox = Listbox(width=50)
+        self.listbox.pack()
+        for item in unofferedlst:
+            self.listbox.insert(END, item)
+        self.doneButton = Button(text="Klaar", command=self.keuzemenu)
+        self.doneButton.pack(padx=10, pady=10)
 
     def clear(self):
+        """
+        Deze fuctie gebruik ik om het scherm leg te maken zodat er weer iets nieuws weergegeven kan worden
+        """
         try:
             self.infolabel.destroy()
         except AttributeError:
@@ -448,19 +485,31 @@ class ThuisBioscoop:
             self.submitButton.destroy()
         except AttributeError:
             pass
+        try:
+            self.unofferedButton.destroy()
+        except AttributeError:
+            pass
+        try:
+            self.moviesButton.destroy()
+        except AttributeError:
+            pass
+        try:
+            self.doneButton.destroy()
+        except AttributeError:
+            pass
+        try:
+            self.listbox.destroy()
+        except AttributeError:
+            pass
 
-
-films_on_tv = get_films()
+#\/ Dit stuk code start alle functies bovenaan de pagina
+get_films()
 films_delen()
 aangeboden = aangeboden_films()
 
-
+#\/Dit stuk code zorgt ervoor dat het frame wordt gemaakt en de code in de class ThuisBioscoop wordt gebruikt en dat hij ThuisBioscoop als title heeft en 200x200 pixels is
 root = Tk()
+root.title("ThuisBioscoop")
+root.geometry("315x265")
 programma = ThuisBioscoop(root)
 root.mainloop()
-
-with open("films.csv", "w", newline="") as bestand:
-    writer = csv.writer(bestand, delimiter=';')
-    for film in films_on_tv:
-        if film["titel"] and film["starttijd"] and film["eindtijd"] and film["zender"] is not None:
-            writer.writerow((film["titel"], film["starttijd"], film["eindtijd"], film["zender"]))
